@@ -5,33 +5,44 @@ import {ref} from "vue";
 const hideHeader = ref(false);
 
 function scrollHandler(details) {
-  console.log(details);
-  hideHeader.value = details.direction === 'down';
+  console.log(detailsToString(details));
+  if (details.inflectionPoint.top === 0) {
+    hideHeader.value = false;
+    return;
+  }
+
+  if (Math.abs(details.delta.top) > 40) {
+    hideHeader.value = details.direction === 'down';
+  }
+}
+
+function detailsToString(details) {
+  return `delta: ${details.delta.top}, direction ${details.direction}, directionChanged: ${details.directionChanged}, inflectionPoint: ${details.inflectionPoint.top}, position: ${details.position.top}`;
 }
 </script>
 
 <template>
   <q-layout view="hHh lpR fFf">
-
-
         <div class="n-search-layout">
-          <header v-if="!hideHeader"
-                  :class="hideHeader ? 'animate__fadeOut' : 'animate__fadeIn'"
-                  class="n-search-layout__header bg-orange-4 animate__animated">
-            <div class=" q-px-md q-py-sm row q-gutter-sm">
-              <q-badge color="purple" v-for="n in 30">Lorem ipsum dolor.</q-badge>
-            </div>
-          </header>
-          <header class="n-search-layout__header-stay bg-pink-4">
-            <div class=" q-px-md q-py-sm row q-gutter-sm">
-              <q-badge v-for="n in 60">Lorem ipsum.</q-badge>
-            </div>
-          </header>
+          <div class="n-search-layout__header">
+            <header v-show="!hideHeader"
+                    :class="hideHeader ? 'animate__fadeOut' : 'animate__fadeIn'"
+                    class="bg-orange-4 animate__animated">
+              <div class=" q-px-md q-py-sm row q-gutter-sm">
+                <q-badge color="purple" v-for="n in 28">Lorem ipsum dolor.</q-badge>
+              </div>
+            </header>
+            <header class="bg-pink-4">
+              <div class=" q-px-md q-py-sm row q-gutter-sm">
+                <q-badge v-for="n in 30">Lorem ipsum.</q-badge>
+              </div>
+            </header>
+          </div>
 
           <div class="n-search-layout__content bg-green-4">
             <q-scroll-area class="fit q-px-lg">
                 <q-scroll-observer @scroll="scrollHandler" />
-                <ArticleCard class="q-my-md" v-for="n in 30" />
+                <ArticleCard class="q-my-md" v-for="n in 3" />
             </q-scroll-area>
           </div>
         </div>
