@@ -3,10 +3,19 @@ import ArticleCard from "./components/ArticleCard.vue";
 import {ref} from "vue";
 
 const hideHeader = ref(false);
+const height = ref(0);
+
+function setHeight(details) {
+  height.value = details.height;
+}
+
+function getWindowHeight() {
+  return document.documentElement.clientHeight;
+}
 
 function scrollHandler(details) {
   console.log(detailsToString(details));
-  if (details.inflectionPoint.top === 0) {
+  if (details.inflectionPoint.top === 0 || getWindowHeight() >= height.value) {
     hideHeader.value = false;
     return;
   }
@@ -42,7 +51,8 @@ function detailsToString(details) {
           <div class="n-search-layout__content bg-green-4">
             <q-scroll-area class="fit q-px-lg">
                 <q-scroll-observer @scroll="scrollHandler" />
-                <ArticleCard class="q-my-md" v-for="n in 3" />
+                <q-resize-observer @resize="setHeight" />
+                <ArticleCard class="q-my-md" v-for="n in 5" />
             </q-scroll-area>
           </div>
         </div>
